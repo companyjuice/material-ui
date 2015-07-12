@@ -1,5 +1,6 @@
 let React = require('react');
 let StylePropable = require('./mixins/style-propable');
+let AutoPrefix = require('./styles/auto-prefix');
 let Transitions = require("./styles/transitions");
 
 
@@ -14,11 +15,11 @@ let CircularProgress = React.createClass({
       max:  React.PropTypes.number,
       size: React.PropTypes.number,
       color: React.PropTypes.string,
-      innerStyle: React.PropTypes.object
+      innerStyle: React.PropTypes.object,
   },
 
   contextTypes: {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
   },
 
   _getRelativeValue() {
@@ -47,14 +48,14 @@ let CircularProgress = React.createClass({
     setTimeout(this._scalePath.bind(this, path, step + 1), step ? 750 : 250);
 
     if (!this.isMounted()) return;
-    if (this.props.mode != "indeterminate") return;
+    if (this.props.mode !== "indeterminate") return;
 
     if (step === 0) {
       path.style.strokeDasharray = "1, 200";
       path.style.strokeDashoffset = 0;
       path.style.transitionDuration = "0ms";
     }
-    else if (step == 1) {
+    else if (step === 1) {
       path.style.strokeDasharray = "89, 200";
       path.style.strokeDashoffset = -35;
       path.style.transitionDuration = "750ms";
@@ -70,15 +71,17 @@ let CircularProgress = React.createClass({
     setTimeout(this._rotateWrapper.bind(this, wrapper), 10050);
 
     if (!this.isMounted()) return;
-    if (this.props.mode != "indeterminate") return;
+    if (this.props.mode !== "indeterminate") return;
 
-    wrapper.style.transform = null;
-    wrapper.style.transform = "rotate(0deg)";
+    AutoPrefix.set(wrapper.style, "transform", null);
+    AutoPrefix.set(wrapper.style, "transform", "rotate(0deg)");
     wrapper.style.transitionDuration = "0ms";
 
     setTimeout(() => {
-      wrapper.style.transform = "rotate(1800deg)";
+      AutoPrefix.set(wrapper.style, "transform", "rotate(1800deg)");
       wrapper.style.transitionDuration = "10s";
+      //wrapper.style.webkitTransitionTimingFunction = "linear";
+      AutoPrefix.set(wrapper.style, "transitionTimingFunction", "linear");
     }, 50);
   },
 
@@ -88,7 +91,7 @@ let CircularProgress = React.createClass({
           value: 0,
           min: 0,
           max: 100,
-          size: 1
+          size: 1,
       };
   },
 
@@ -117,24 +120,27 @@ let CircularProgress = React.createClass({
         height: size,
         margin: "5px",
         display: "inline-block",
-        transition: Transitions.create("transform", "20s", null, "linear")
+        transition: Transitions.create("transform", "20s", null, "linear"),
+        //webkitTransitionTimingFunction: "linear",
       },
       svg: {
         height: size,
         position: "relative",
         transform: "scale(" + zoom + ")",
-        width: size
+        width: size,
       },
       path: {
         strokeDasharray: "89,200",
         strokeDashoffset: 0,
         stroke: this.props.color || this.getTheme().primary1Color,
         strokeLinecap: "round",
-        transition: Transitions.create("all", "1.5s", null, "ease-in-out")
-      }
+        transition: Transitions.create("all", "1.5s", null, "ease-in-out"),
+      },
     };
 
-    if (this.props.mode == "determinate"){
+    AutoPrefix.set(styles.wrapper, "transitionTimingFunction", "linear");
+
+    if (this.props.mode === "determinate"){
       let relVal = this._getRelativeValue();
       styles.path.transition = Transitions.create("all", "0.3s", null, "linear");
       styles.path.strokeDasharray = Math.round(relVal * 1.25) + ",200";
@@ -148,7 +154,7 @@ let CircularProgress = React.createClass({
       style,
       innerStyle,
       size,
-      ...other
+      ...other,
     } = this.props;
 
 
@@ -163,7 +169,7 @@ let CircularProgress = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 module.exports = CircularProgress;

@@ -11,15 +11,15 @@ let Overlay = React.createClass({
   mixins: [StylePropable],
 
   propTypes: {
-    show: React.PropTypes.bool,
     autoLockScrolling: React.PropTypes.bool,
-    transitionEnabled: React.PropTypes.bool
+    show: React.PropTypes.bool,
+    transitionEnabled: React.PropTypes.bool,
   },
 
   getDefaultProps() {
     return {
       autoLockScrolling: true,
-      transitionEnabled: true
+      transitionEnabled: true,
     };
   },
 
@@ -60,7 +60,7 @@ let Overlay = React.createClass({
         transition:
           this.props.transitionEnabled &&
           Transitions.easeOut('0ms', 'left', '400ms') + ',' +
-          Transitions.easeOut('400ms', 'opacity')
+          Transitions.easeOut('400ms', 'opacity'),
       },
       rootWhenShown: {
         left: '0',
@@ -68,8 +68,8 @@ let Overlay = React.createClass({
         transition:
           this.props.transitionEnabled &&
           Transitions.easeOut('0ms', 'left') + ',' +
-          Transitions.easeOut('400ms', 'opacity')
-      }
+          Transitions.easeOut('400ms', 'opacity'),
+      },
     };
     return styles;
   },
@@ -78,7 +78,7 @@ let Overlay = React.createClass({
     let {
       show,
       style,
-      ...other
+      ...other,
     } = this.props;
 
     let styles = this.mergeAndPrefix(this.getStyles().root, this.props.style, this.props.show && this.getStyles().rootWhenShown);
@@ -103,8 +103,8 @@ let Overlay = React.createClass({
 
   _allowScrolling() {
     let body = document.getElementsByTagName('body')[0];
-    body.style.overflow = this._originalBodyOverflow;
-  }
+    body.style.overflow = this._originalBodyOverflow || '';
+  },
 
 });
 
